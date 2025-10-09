@@ -4,7 +4,7 @@ systemctl status nginx
 hugo version
 
 # Check Podman
-podman ps
+podman --version
 
 # Check Prometheus
 prometheus --version
