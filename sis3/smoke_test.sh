@@ -1,4 +1,6 @@
-systemctl status nginx
+#!/usr/bin/bash
+
+curl -f http://localhost:80 
 
 # Check Hugo binary
 hugo version

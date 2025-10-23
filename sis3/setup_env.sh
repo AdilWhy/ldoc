@@ -1,0 +1,1 @@
+sudo apt install -y hugo nginx git podman prometheus node-exporter grafana rsyslog ufw certbot python3-pip curl
