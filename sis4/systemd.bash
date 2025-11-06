@@ -13,7 +13,11 @@ Description=Adil Hugo Blog Container
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/podman run --rm -p 80:80 $IMAGE
+Type=forking
+ExecStartPre=/usr/bin/podman pull $IMAGE
+ExecStart=/usr/bin/podman run -d --name adilblog -p 80:80 $IMAGE
+ExecStop=/usr/bin/podman stop adilblog
+ExecStopPost=/usr/bin/podman rm -f adilblog
 Restart=always
 RestartSec=10
 
