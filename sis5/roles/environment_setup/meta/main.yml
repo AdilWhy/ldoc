@@ -1,0 +1,19 @@
+---
+# Role metadata for environment_setup
+dependencies: []
+
+galaxy_info:
+  author: Adil Yerzhanuly
+  description: Install and configure system packages and services
+  company: 
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+  galaxy_tags:
+    - system
+    - packages
+    - monitoring

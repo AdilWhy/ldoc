@@ -1,0 +1,11 @@
+#!/bin/bash
+# Health check script for Hugo blog
+# Managed by Ansible
+
+if curl -s --head http://localhost:{{ blog_port }} | grep "200 OK" > /dev/null; then
+  echo "$(date): Blog is OK" >> /var/log/blog_health.log
+else
+  echo "$(date): Blog DOWN!" >> /var/log/blog_health.log
+  # Optional: Send notification or restart service
+  systemctl restart {{ blog_service_name }}
+fi

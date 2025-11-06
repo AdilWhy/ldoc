@@ -1,0 +1,38 @@
+---
+# Main playbook for SIS 2, 3, and 4 automation
+# Author: Adil Yerzhanuly
+# Purpose: Automate infrastructure setup for Hugo blog deployment
+
+- name: Complete Infrastructure Setup (SIS 2-4)
+  hosts: webservers
+  become: yes
+  gather_facts: yes
+  
+  vars:
+    blog_repo: "https://github.com/adilwhy/ldoc.git"
+    blog_image: "docker.io/adilwhy/adilblog:latest"
+    blog_port: 80
+    
+  roles:
+    - role: users_setup
+      tags: ['users', 'sis2']
+      
+    - role: environment_setup
+      tags: ['environment', 'packages', 'sis3']
+      
+    - role: blog_deployment
+      tags: ['blog', 'docker', 'sis4']
+
+  post_tasks:
+    - name: Display completion message
+      debug:
+        msg: |
+          ========================================
+          Infrastructure Setup Complete!
+          ========================================
+          SIS 2: Users and permissions configured
+          SIS 3: Environment and packages installed
+          SIS 4: Hugo blog deployed and running
+          
+          Blog URL: http://{{ ansible_host }}:{{ blog_port }}
+          ========================================

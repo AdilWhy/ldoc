@@ -1,0 +1,10 @@
+---
+# SIS 4: Blog Deployment Role
+# Purpose: Deploy Hugo blog using Docker/Podman with systemd
+
+blog_image: "docker.io/adilwhy/adilblog:latest"
+blog_container_name: "adilblog"
+blog_port: 80
+blog_service_name: "adilblog"
+health_check_script: "/usr/local/bin/check_blog.sh"
+update_script: "/usr/local/bin/update_blog.sh"

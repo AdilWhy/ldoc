@@ -1,0 +1,7 @@
+#!/bin/bash
+# Update script for Hugo blog
+# Managed by Ansible
+
+/usr/bin/podman pull {{ blog_image }}
+/usr/bin/systemctl restart {{ blog_service_name }}
+echo "$(date): Blog updated and restarted" >> /var/log/blog_update.log

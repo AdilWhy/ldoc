@@ -1,0 +1,98 @@
+---
+# SIS 4: Blog Deployment Role
+# Purpose: Deploy Hugo blog using Docker/Podman with systemd
+
+- name: Pull blog Docker image
+  containers.podman.podman_image:
+    name: "{{ blog_image }}"
+    state: present
+    force: yes
+
+- name: Create systemd service file for blog
+  template:
+    src: adilblog.service.j2
+    dest: /etc/systemd/system/{{ blog_service_name }}.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: reload systemd
+
+- name: Create health check script
+  template:
+    src: check_blog.sh.j2
+    dest: "{{ health_check_script }}"
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create update script
+  template:
+    src: update_blog.sh.j2
+    dest: "{{ update_script }}"
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create blog health log file
+  file:
+    path: /var/log/blog_health.log
+    state: touch
+    owner: adil_yerzhanuly
+    group: devops
+    mode: '0644'
+
+- name: Create blog update log file
+  file:
+    path: /var/log/blog_update.log
+    state: touch
+    owner: adil_yerzhanuly
+    group: devops
+    mode: '0644'
+
+- name: Enable blog service
+  systemd:
+    name: "{{ blog_service_name }}"
+    enabled: yes
+    daemon_reload: yes
+
+- name: Start blog service
+  systemd:
+    name: "{{ blog_service_name }}"
+    state: started
+
+- name: Wait for blog to be ready
+  wait_for:
+    port: "{{ blog_port }}"
+    delay: 5
+    timeout: 60
+
+- name: Verify blog is running
+  uri:
+    url: "http://localhost:{{ blog_port }}"
+    method: GET
+    status_code: 200
+  register: blog_check
+
+- name: Setup cron job for health check (every 5 minutes)
+  cron:
+    name: "Check blog health"
+    minute: "*/5"
+    job: "{{ health_check_script }}"
+    user: root
+
+- name: Setup cron job for blog update (daily at 3 AM)
+  cron:
+    name: "Update blog daily"
+    minute: "0"
+    hour: "3"
+    job: "{{ update_script }}"
+    user: root
+
+- name: Display blog deployment status
+  debug:
+    msg:
+      - "SIS 4: Hugo blog deployed successfully"
+      - "Blog URL: http://{{ ansible_host }}:{{ blog_port }}"
+      - "Service: {{ blog_service_name }}.service"
+      - "Health check: Running every 5 minutes"
+      - "Auto-update: Daily at 3 AM"

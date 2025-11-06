@@ -1,0 +1,109 @@
+---
+# SIS 2: Users and Permissions Setup Role
+# Purpose: Create users, groups, and configure permissions
+
+- name: Create system groups
+  group:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - devops
+    - monitoring
+    - logging
+    - content_author
+    - monitoring_system
+    - logging_system
+    - automation
+
+- name: Create main devops user (adil_yerzhanuly)
+  user:
+    name: adil_yerzhanuly
+    uid: 1000
+    group: devops
+    groups: 
+      - devops
+      - sudo
+    shell: /bin/bash
+    comment: "Adil Yerzhanuly - DevOps Engineer"
+    create_home: yes
+    state: present
+
+- name: Create monitoring system user
+  user:
+    name: monitoring_system
+    uid: 999
+    group: monitoring_system
+    groups: monitoring
+    shell: /usr/sbin/nologin
+    home: /home/monitoring_system
+    comment: "Monitoring System"
+    create_home: yes
+    state: present
+
+- name: Create logging system user
+  user:
+    name: logging_system
+    uid: 994
+    group: logging_system
+    groups: logging
+    shell: /usr/sbin/nologin
+    home: /home/logging_system
+    comment: "Logging System"
+    create_home: yes
+    state: present
+
+- name: Create automation user for Ansible
+  user:
+    name: automation_user
+    uid: 998
+    group: automation
+    groups: automation
+    shell: /bin/bash
+    comment: "Automation User for Ansible"
+    create_home: yes
+    state: present
+
+- name: Create blog directory structure
+  file:
+    path: /var/www/blog
+    state: directory
+    owner: adil_yerzhanuly
+    group: devops
+    mode: '0755'
+
+- name: Create monitoring directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: monitoring_system
+    group: monitoring
+    mode: '0755'
+  loop:
+    - /opt/monitoring
+    - /var/lib/prometheus
+
+- name: Create logging directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: logging_system
+    group: logging
+    mode: '0755'
+  loop:
+    - /opt/logging
+    - /var/lib/loki
+
+- name: Create automation directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: automation_user
+    group: automation
+    mode: '0755'
+  loop:
+    - /opt/ansible
+    - /var/log/ansible
+
+- name: Display users setup completion
+  debug:
+    msg: "SIS 2: Users, groups, and permissions configured successfully"

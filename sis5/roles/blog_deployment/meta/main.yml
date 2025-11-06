@@ -1,0 +1,20 @@
+---
+# Role metadata for blog_deployment
+dependencies: []
+
+galaxy_info:
+  author: Adil Yerzhanuly
+  description: Deploy Hugo blog with Docker/Podman and systemd
+  company: 
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+  galaxy_tags:
+    - docker
+    - blog
+    - hugo
+    - systemd

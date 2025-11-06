@@ -1,0 +1,5 @@
+---
+# Handler for reloading systemd
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
