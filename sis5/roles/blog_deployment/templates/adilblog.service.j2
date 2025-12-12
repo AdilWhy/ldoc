@@ -1,12 +1,15 @@
 [Unit]
 Description=Adil Hugo Blog Container
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Service]
-Type=forking
+Type=simple
+ExecStartPre=-/usr/bin/podman stop {{ blog_container_name }}
+ExecStartPre=-/usr/bin/podman rm -f {{ blog_container_name }}
 ExecStartPre=/usr/bin/podman pull {{ blog_image }}
-ExecStart=/usr/bin/podman run -d --name {{ blog_container_name }} -p {{ blog_port }}:80 {{ blog_image }}
-ExecStop=/usr/bin/podman stop {{ blog_container_name }}
+ExecStart=/usr/bin/podman run --name {{ blog_container_name }} -p {{ blog_port }}:80 {{ blog_image }}
+ExecStop=/usr/bin/podman stop -t 10 {{ blog_container_name }}
 ExecStopPost=/usr/bin/podman rm -f {{ blog_container_name }}
 Restart=always
 RestartSec=10

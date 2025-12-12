@@ -7,6 +7,24 @@
     update_cache: yes
     cache_valid_time: 3600
 
+- name: Install prerequisite packages for repository management
+  apt:
+    name:
+      - apt-transport-https
+      - software-properties-common
+    state: present
+
+- name: Add Grafana GPG key
+  apt_key:
+    url: https://apt.grafana.com/gpg.key
+    state: present
+
+- name: Add Grafana repository
+  apt_repository:
+    repo: deb https://apt.grafana.com stable main
+    state: present
+    filename: grafana
+
 - name: Install required packages
   apt:
     name:
@@ -36,6 +54,7 @@
       - docker
       - requests
     state: present
+    extra_args: --break-system-packages
 
 - name: Enable and start Nginx service
   systemd:

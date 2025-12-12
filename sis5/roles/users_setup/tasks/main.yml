@@ -18,7 +18,6 @@
 - name: Create main devops user (adil_yerzhanuly)
   user:
     name: adil_yerzhanuly
-    uid: 1000
     group: devops
     groups: 
       - devops
@@ -31,7 +30,6 @@
 - name: Create monitoring system user
   user:
     name: monitoring_system
-    uid: 999
     group: monitoring_system
     groups: monitoring
     shell: /usr/sbin/nologin
@@ -43,7 +41,6 @@
 - name: Create logging system user
   user:
     name: logging_system
-    uid: 994
     group: logging_system
     groups: logging
     shell: /usr/sbin/nologin
@@ -55,7 +52,6 @@
 - name: Create automation user for Ansible
   user:
     name: automation_user
-    uid: 998
     group: automation
     groups: automation
     shell: /bin/bash
