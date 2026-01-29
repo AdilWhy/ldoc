@@ -1,0 +1,15 @@
+---
+# PostgreSQL Deployment Role - Default Variables
+
+postgres_version: "15"
+postgres_container_name: "postgresql"
+postgres_port: 5432
+postgres_data_dir: "/var/lib/postgresql/data"
+
+# Database configuration
+postgres_db: "blogdb"
+postgres_user: "bloguser"
+postgres_password: "test123"
+
+# Container image
+postgres_image: "docker.io/library/postgres:{{ postgres_version }}"

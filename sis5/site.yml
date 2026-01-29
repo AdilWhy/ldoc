@@ -22,6 +22,9 @@
       
     - role: blog_deployment
       tags: ['blog', 'docker', 'sis4']
+      
+    - role: postgresql_deployment
+      tags: ['database', 'postgresql']
 
   post_tasks:
     - name: Display completion message

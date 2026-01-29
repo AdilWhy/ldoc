@@ -1,0 +1,34 @@
+---
+# PostgreSQL Deployment Role
+# Purpose: Deploy PostgreSQL using Podman
+
+- name: Create PostgreSQL data directory
+  file:
+    path: "{{ postgres_data_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Run PostgreSQL container
+  containers.podman.podman_container:
+    name: "{{ postgres_container_name }}"
+    image: "{{ postgres_image }}"
+    state: started
+    restart_policy: always
+    ports:
+      - "{{ postgres_port }}:5432"
+    env:
+      POSTGRES_DB: "{{ postgres_db }}"
+      POSTGRES_USER: "{{ postgres_user }}"
+      POSTGRES_PASSWORD: "{{ postgres_password }}"
+    volume:
+      - "{{ postgres_data_dir }}:/var/lib/postgresql/data:Z"
+
+- name: Wait for PostgreSQL to be ready
+  wait_for:
+    port: "{{ postgres_port }}"
+    delay: 3
+    timeout: 30
+
+- name: Display PostgreSQL status
+  debug:
+    msg: "PostgreSQL running on port {{ postgres_port }} - Database: {{ postgres_db }}, User: {{ postgres_user }}"
